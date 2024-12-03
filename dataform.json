@@ -1,0 +1,7 @@
+{
+    "warehouse": "bigquery",
+    "defaultSchema": "dataform",
+    "defaultDatabase": "ro-areatecnica",
+    "defaultLocation": "US"
+}
+
