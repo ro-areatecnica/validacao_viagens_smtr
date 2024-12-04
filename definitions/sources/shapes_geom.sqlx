@@ -1,0 +1,7 @@
+config {
+  type: "declaration",
+  database: "rj-smtr",
+  schema: "planejamento",
+  name: "shapes_geom",
+  description: "Regras para mapear caminhos de deslocamento de veículos, às vezes chamados de alinhamentos de rotas."
+}

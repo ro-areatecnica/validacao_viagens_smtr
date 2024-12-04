@@ -1,0 +1,12 @@
+config {
+  type: "table",
+  schema: "staging",
+  name: "aux_shapes_geom_filtrada"
+}
+
+SELECT
+  *
+FROM ${ref("planejamento", "shapes_geom")}
+-- WHERE
+--   feed_start_date = '{{ var("data_versao_gtfs") }}'
+-- Alex verificar

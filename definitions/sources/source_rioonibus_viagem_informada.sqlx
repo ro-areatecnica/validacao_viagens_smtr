@@ -1,0 +1,7 @@
+config {
+  type: "declaration",
+  database: "rj-smtr-staging",
+  schema: "source_rioonibus",
+  name: "viagem_informada",
+  description: ""
+}
