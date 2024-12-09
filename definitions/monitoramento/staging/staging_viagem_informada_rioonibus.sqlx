@@ -5,9 +5,9 @@ config {
 }
 
 select
-    data,
+    data_processamento, --data,
     safe_cast(id_viagem as string) as id_viagem,
-    timestamp_captura,
+    datetime_captura, --timestamp_captura,
     date(
         parse_timestamp(
             '%Y-%m-%d', safe_cast(json_value(content, '$.data_viagem') as string)
