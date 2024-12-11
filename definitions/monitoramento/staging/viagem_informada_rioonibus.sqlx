@@ -1,6 +1,6 @@
 config {
   type: "view",
-  schema: "monitoramento",
+  schema: "monitoramento_staging",
   name: "viagem_informada_rioonibus",
   tags: ["raw_viagem"]
 }
