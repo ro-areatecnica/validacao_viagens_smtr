@@ -1,0 +1,7 @@
+config {
+  type: "declaration",
+  database: "rj-smtr",
+  schema: "gtfs",
+  name: "feed_info",
+  description: "Metadados do conjunto de dados, incluindo informações sobre editor, versão e expiração."
+}

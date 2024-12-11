@@ -1,0 +1,13 @@
+config {
+  type: "view",
+  schema: "staging",
+  name: "aux_shapes_geom_filtrada",
+  tags: ["staging"]
+}
+
+SELECT
+  *
+FROM ${ref("shapes_geom")}
+WHERE
+  feed_start_date = ${constants.data_versao_gtfs}
+  -- Pegar ultima versao da gtfs e setar no feed_start_date
