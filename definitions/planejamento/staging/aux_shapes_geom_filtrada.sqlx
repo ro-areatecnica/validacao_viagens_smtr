@@ -7,11 +7,7 @@ config {
 
 SELECT
   *
-FROM ${ref("planejamento", "shapes_geom")}
+FROM ${ref("shapes_geom")}
 WHERE
-  feed_start_date = '{{ var("data_versao_gtfs") }}'
--- Pegar ultima versao da gtfs e setar no feed_start_date
-
--- queries/dbt_project.yml
--- ## GTFS
---   data_versao_gtfs: "2024-05-03" # fixada última data disponível
+  feed_start_date = ${constants.data_versao_gtfs}
+  -- Pegar ultima versao da gtfs e setar no feed_start_date

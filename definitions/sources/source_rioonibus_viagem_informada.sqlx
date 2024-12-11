@@ -1,7 +1,0 @@
-config {
-  type: "declaration",
-  database: "ro-areatecnica",
-  schema: "source_rioonibus",
-  name: "viagem_informada",
-  description: ""
-}

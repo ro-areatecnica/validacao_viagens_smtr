@@ -1,14 +1,23 @@
 config {
-  type: "table",
+  type: "incremental",
   schema: "planejamento",
   name: "shapes_geom",
-  tags: ["geolocalizacao"]
+  tags: ["geolocalizacao"],
+  bigquery: {
+    partitionBy: "feed_start_date"
+  }
 }
 
-js {
-    const moment = require("moment");
-    const last_feed_version = constants.get_last_feed_start_date(ctx);
+pre_operations {
+  DECLARE last_feed_version DATE;
+
+  SET last_feed_version = (
+    SELECT MAX(feed_start_date)
+    FROM ${ref("gtfs", "feed_info")}
+    ${when(incremental(), `WHERE feed_start_date < ${constants.data_versao_gtfs}`)}
+  );
 }
+
 
 with
     shapes as (
@@ -20,10 +29,9 @@ with
             shape_pt_sequence,
             st_geogpoint(shape_pt_lon, shape_pt_lat) as ponto_shape,
             concat(shape_pt_lon, " ", shape_pt_lat) as lon_lat
-        from ${ref("shapes")}
-            where
-                feed_start_date
-                in (${constants.data_versao_gtfs}, ${last_feed_version})
+        from ${ref("gtfs", "shapes")}
+            where feed_start_date in 
+            (last_feed_version, ${constants.data_versao_gtfs})
     ),
     shapes_agg as (
         select
@@ -48,5 +56,5 @@ select
     wkt_shape,
     array_shape[ordinal(1)] as start_pt,
     array_shape[ordinal(array_length(array_shape))] as end_pt,
-    -- '{{ var("version") }}' as versao
+    '' as versao
 from shapes_agg
