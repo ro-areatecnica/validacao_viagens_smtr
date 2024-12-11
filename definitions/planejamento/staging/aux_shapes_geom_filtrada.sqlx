@@ -1,6 +1,6 @@
 config {
   type: "view",
-  schema: "staging",
+  schema: "planejamento_staging",
   name: "aux_shapes_geom_filtrada",
   tags: ["staging"]
 }
