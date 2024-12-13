@@ -1,0 +1,22 @@
+config {
+  type: "operations",
+  tags: ["setup"],
+}
+
+CREATE TABLE IF NOT EXISTS ro-areatecnica.planejamento.segmento_shape (
+    feed_start_date DATE,
+    feed_end_date DATE,
+    feed_version STRING,
+    shape_id STRING,
+    id_segmento STRING,
+    segmento GEOGRAPHY,
+    wkt_segmento STRING,
+    comprimento_segmento FLOAT64,
+    buffer_completo GEOGRAPHY,
+    buffer GEOGRAPHY,
+    indicador_tunel BOOL,
+    indicador_area_prejudicada BOOL,
+    indicador_segmento_pequeno BOOL,
+    indicador_segmento_desconsiderado BOOL,
+    versao STRING
+);

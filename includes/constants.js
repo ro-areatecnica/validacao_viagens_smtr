@@ -1,3 +1,7 @@
+const buffer_tunel_metros = 50;
+const limite_reducao_area_buffer = 0.5;
+const comprimento_minimo_segmento_shape = 990;
+
 function get_last_feed_start_date() {
   return `
     (
@@ -10,4 +14,9 @@ function get_last_feed_start_date() {
 
 const data_versao_gtfs = get_last_feed_start_date()
 
-module.exports = { data_versao_gtfs };
+module.exports = { 
+  data_versao_gtfs, 
+  buffer_tunel_metros, 
+  limite_reducao_area_buffer, 
+  comprimento_minimo_segmento_shape
+};
