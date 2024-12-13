@@ -1,0 +1,12 @@
+config {
+  type: "table",
+  schema: "planejamento_staging",
+  name: "aux_segmento_shape_clean",
+  dependencies: [ "aux_shapes_geom_filtrada" ],
+  tags: ["staging"]
+}
+
+SELECT
+*
+FROM ${ref("aux_segmento_shape")}
+-- Lembrar de trocar o nome da aux_segmento_shape para aux_segmento_shape_raw
