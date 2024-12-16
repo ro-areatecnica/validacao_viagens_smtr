@@ -1,7 +1,7 @@
 config {
   type: "declaration",
-  database: "rj-smtr-staging",
-  schema: "source_rioonibus",
+  database: "rj-smtr",
+  schema: "monitoramento",
   name: "viagem_informada",
   description: ""
 }
