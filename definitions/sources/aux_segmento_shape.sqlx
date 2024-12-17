@@ -2,6 +2,6 @@ config {
   type: "declaration",
   database: "ro-areatecnica",
   schema: "planejamento_staging",
-  name: "aux_segmento_shape",
+  name: "aux_segmento_shape_raw",
   description: ""
 }
