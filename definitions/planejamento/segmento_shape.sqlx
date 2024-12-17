@@ -1,8 +1,8 @@
 config {
-  type: "table",
+  type: "incremental",
   schema: "planejamento",
   name: "segmento_shape",
-  tags: ["geolocalizacao"],
+  tags: ["geolocalizacao"]
 }
 
 /* O tipo operations não tem opção de particionamento,
@@ -33,7 +33,7 @@ with
             wkt_segmento,
             round(cast(comprimento_segmento as float64), 2) as comprimento_segmento,
             st_geogfromtext(buffer_completo) as buffer_completo
-        from ${ref("aux_segmento_shape_clean")}
+        from ${ref("aux_segmento_shape")}
         
     ),
     tunel as (
