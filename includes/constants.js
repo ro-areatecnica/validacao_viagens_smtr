@@ -5,7 +5,6 @@ const date_range_start = `"2024-11-29T00:00:00"`; /*OBS: Verificar onde está pa
 const date_range_end = `"2024-11-29T00:59:59"`; /*OBS: Verificar onde está passando estas variaveis*/
 const data_inicial_gps_validacao_viagem = `"2024-10-11"`; /*OBS: Verificar onde está passando estas variaveis*/
 
-
 function get_last_feed_start_date() {
   return `
     (
