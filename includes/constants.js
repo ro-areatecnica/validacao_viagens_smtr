@@ -1,4 +1,4 @@
-const versao = '';
+const versao = `""`;
 const buffer_tunel_metros = 50;
 const limite_reducao_area_buffer = 0.5;
 const comprimento_minimo_segmento_shape = 990;
@@ -13,7 +13,7 @@ function get_last_feed_start_date() {
     SELECT 
       MAX(feed_start_date) AS max_date 
     FROM \`rj-smtr.gtfs.feed_info\`
-    WHERE feed_start_date < data_inicial_gps_validacao_viagem
+    WHERE feed_start_date < DATE(${data_inicial_gps_validacao_viagem})
     )
   `;
 }
