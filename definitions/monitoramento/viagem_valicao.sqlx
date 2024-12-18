@@ -45,9 +45,12 @@ with
             feed_version,
             feed_start_date
         from ${ref("gps_segmento_viagem")}
-        -- where
-        --     not indicador_segmento_desconsiderado
-        --     {% if is_incremental() %} and {{ incremental_filter }} {% endif %}
+        where
+            not indicador_segmento_desconsiderado
+            ${when(
+                incremental(),
+                `AND data BETWEEN DATE(${constants.date_range_start}) AND DATE(${constants.date_range_end})`
+            )}
         group by
             data,
             id_viagem,
@@ -88,30 +91,30 @@ with
             feed_start_date
         from contagem
     ),
-    -- trips as (
-    --     select distinct
-    --         feed_start_date,
-    --         feed_version,
-    --         route_id,
-    --         array_agg(service_id) as service_ids,
-    --     from {{ ref("trips_gtfs") }}
-    --     {# from `rj-smtr.gtfs.trips` #}
-    --     {% if is_incremental() %}
-    --         where feed_start_date in ({{ gtfs_feeds | join(", ") }})
-    --     {% endif %}
-    --     group by 1, 2, 3
-    -- ),
+    trips as (
+        select distinct
+            feed_start_date,
+            feed_version,
+            route_id,
+            array_agg(service_id) as service_ids,
+        from ${ref("trips")}
+        ${when(
+            incremental(),
+            `where feed_start_date in UNNEST(gtfs_feeds)`
+        )}
+        group by 1, 2, 3
+    ),
     servicos_planejados as (
         select
             i.*,
             (
                 select count(*)
                 from unnest(i.service_ids) as service_id
-                -- join unnest(t.service_ids) as service_id using (service_id)
+                join unnest(t.service_ids) as service_id using (service_id)
             )
             > 0 as indicador_servico_planejado
         from indice i
-        -- left join trips t using (feed_start_date, feed_version, route_id)
+        left join trips t using (feed_start_date, feed_version, route_id)
     )
 select
     data,

@@ -58,7 +58,10 @@ with
             buffer,
             indicador_segmento_desconsiderado
         from ${ref("segmento_shape")}
-        where feed_start_date in UNNEST(gtfs_feeds)
+        ${when(
+            incremental(),
+            `WHERE feed_start_date IN UNNEST(gtfs_feeds)`
+        )}
     ),
     gps_segmento as (
         select 
