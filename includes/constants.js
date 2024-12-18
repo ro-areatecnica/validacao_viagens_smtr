@@ -4,6 +4,7 @@ const comprimento_minimo_segmento_shape = 990;
 const date_range_start = `"2024-11-29T00:00:00"`; /*OBS: Verificar onde está passando estas variaveis*/
 const date_range_end = `"2024-11-29T00:59:59"`; /*OBS: Verificar onde está passando estas variaveis*/
 const data_inicial_gps_validacao_viagem = `"2024-10-11"`; /*OBS: Verificar onde está passando estas variaveis*/
+const parametro_validacao = 0.9;
 
 function get_last_feed_start_date() {
   return `
@@ -24,5 +25,6 @@ module.exports = {
   comprimento_minimo_segmento_shape,
   date_range_start,
   date_range_end,
-  data_inicial_gps_validacao_viagem
+  data_inicial_gps_validacao_viagem,
+  parametro_validacao
 };
