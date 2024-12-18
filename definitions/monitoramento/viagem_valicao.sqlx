@@ -2,7 +2,7 @@ config {
   type: "incremental",
   schema: "monitoramento",
   name: "viagem_validacao",
-  tags: ["monitoramento_viagem"],
+  tags: ["raw_viagem", "monitoramento_viagem"],
   bigquery: {
     partitionBy: "data"
   }
