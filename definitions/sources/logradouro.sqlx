@@ -1,0 +1,7 @@
+config {
+  type: "declaration",
+  database: "datario",
+  schema: "dados_mestres",
+  name: "logradouro",
+  description: ""
+}
