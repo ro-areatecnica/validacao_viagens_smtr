@@ -2,7 +2,7 @@ config {
   type: "view",
   schema: "planejamento_staging",
   name: "aux_shapes_geom_filtrada",
-  tags: ["raw_viagem","geolocalizacao"],
+  tags: ["validacao_smtr","geolocalizacao"],
 }
 
 SELECT
