@@ -2,7 +2,7 @@ config {
   type: "table",
   schema: "monitoramento_staging",
   name: "gps_viagem",
-  tags: ["monitoramento_viagem"],
+  tags: ["raw_viagem", "monitoramento_viagem"],
   bigquery: {
     partitionBy: "data"
   }
