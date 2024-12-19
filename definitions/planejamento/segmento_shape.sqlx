@@ -2,7 +2,7 @@ config {
   type: "incremental",
   schema: "planejamento",
   name: "segmento_shape",
-  tags: ["validacao_smtr","geolocalizacao"]
+  tags: ["geolocalizacao"]
 }
 
 /* O tipo operations não tem opção de particionamento,
