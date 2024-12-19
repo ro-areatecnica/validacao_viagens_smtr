@@ -2,7 +2,7 @@ config {
   type: "incremental",
   schema: "planejamento",
   name: "shapes_geom",
-  tags: ["raw_viagem","geolocalizacao"],
+  tags: ["validacao_smtr","geolocalizacao"],
   bigquery: {
     partitionBy: "feed_start_date"
   }

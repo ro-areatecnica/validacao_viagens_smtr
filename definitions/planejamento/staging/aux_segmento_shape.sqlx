@@ -3,7 +3,7 @@ config {
   schema: "planejamento_staging",
   name: "aux_segmento_shape",
   dependencies: [ "aux_shapes_geom_filtrada" ],
-  tags: ["raw_viagem","geolocalizacao"],
+  tags: ["validacao_smtr","geolocalizacao"],
 }
 
 SELECT
