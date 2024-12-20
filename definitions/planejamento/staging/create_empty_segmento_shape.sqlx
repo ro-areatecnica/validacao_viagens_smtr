@@ -3,20 +3,27 @@ config {
   tags: ["setup"],
 }
 
-CREATE TABLE IF NOT EXISTS ro-areatecnica.planejamento.segmento_shape (
-    feed_start_date DATE,
-    feed_end_date DATE,
-    feed_version STRING,
-    shape_id STRING,
-    id_segmento STRING,
-    segmento GEOGRAPHY,
-    wkt_segmento STRING,
-    comprimento_segmento FLOAT64,
-    buffer_completo GEOGRAPHY,
-    buffer GEOGRAPHY,
-    indicador_tunel BOOL,
-    indicador_area_prejudicada BOOL,
-    indicador_segmento_pequeno BOOL,
-    indicador_segmento_desconsiderado BOOL,
-    versao STRING
-);
+CREATE TABLE `ro-areatecnica.planejamento.segmento_shape`
+PARTITION BY feed_start_date
+AS
+SELECT
+    CAST(NULL AS DATE) AS feed_start_date,
+    CAST(NULL AS DATE) AS feed_end_date,
+    CAST(NULL AS STRING) AS feed_version,
+    CAST(NULL AS STRING) AS shape_id,
+    CAST(NULL AS STRING) AS id_segmento,
+    CAST(NULL AS GEOGRAPHY) AS segmento,
+    CAST(NULL AS STRING) AS wkt_segmento,
+    CAST(NULL AS FLOAT64) AS comprimento_segmento,
+    CAST(NULL AS GEOGRAPHY) AS buffer_completo,
+    CAST(NULL AS GEOGRAPHY) AS buffer,
+    CAST(NULL AS BOOL) AS indicador_tunel,
+    CAST(NULL AS BOOL) AS indicador_area_prejudicada,
+    CAST(NULL AS BOOL) AS indicador_segmento_pequeno,
+    CAST(NULL AS BOOL) AS indicador_segmento_desconsiderado,
+    CAST(NULL AS STRING) AS versao
+;
+
+--OBS: Lembrar de excluir o registro nulo, a operação particionada insere por defaul um registro nulo.
+-- DELETE FROM `ro-areatecnica.planejamento.segmento_shape`
+-- WHERE feed_start_date is null

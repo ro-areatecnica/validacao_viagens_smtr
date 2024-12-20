@@ -2,7 +2,10 @@ config {
   type: "incremental",
   schema: "planejamento",
   name: "segmento_shape",
-  tags: ["geolocalizacao"]
+  tags: ["geolocalizacao"],
+  bigquery: {
+    partitionBy: "feed_start_date"
+  }
 }
 
 /* O tipo operations não tem opção de particionamento,
@@ -33,7 +36,7 @@ with
             wkt_segmento,
             round(cast(comprimento_segmento as float64), 2) as comprimento_segmento,
             st_geogfromtext(buffer_completo) as buffer_completo
-        from ${ref("aux_segmento_shape")}
+        FROM ${ref("aux_segmento_shape")}
         
     ),
     tunel as (

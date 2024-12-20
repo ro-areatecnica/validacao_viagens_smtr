@@ -1,8 +1,8 @@
 config {
-  type: "table",
+  type: "incremental",
   schema: "monitoramento_staging",
   name: "gps_viagem",
-  tags: ["monitoramento_viagem"],
+  tags: ["monitoramento_viagem_raw", "monitoramento_viagem"],
   bigquery: {
     partitionBy: "data"
   }
@@ -24,7 +24,10 @@ with
             sentido,
             fonte_gps
         from ${ref("viagem_informada")}
-        where data between date(${constants.date_range_start}) and date(${constants.date_range_end})  
+        ${when(
+            incremental(), 
+            `where data between date(${constants.date_range_start}) and date(${constants.date_range_end})`
+        )}
     ),
     gps_conecta as (
         select 
@@ -34,7 +37,8 @@ with
             latitude, 
             longitude
         from ${ref("br_rj_riodejaneiro_veiculos", "gps_sppo")}
-        where
+        ${when(
+            incremental(), `where
         (
         select
             case 
@@ -43,7 +47,7 @@ with
                     and date_add(date(${constants.date_range_end}), interval 1 day) 
                     else data >= date(${constants.data_inicial_gps_validacao_viagem}) 
                     end
-        )
+        )`)}
     ),
     gps_zirix as (
         select 
@@ -54,7 +58,8 @@ with
             latitude, 
             longitude
         from ${ref("br_rj_riodejaneiro_onibus_gps_zirix", "gps_sppo")}
-        where
+        ${when(
+            incremental(), `where
         (
         select
             case 
@@ -63,7 +68,7 @@ with
                     and date_add(date(${constants.date_range_end}), interval 1 day) 
                     else data >= date(${constants.data_inicial_gps_validacao_viagem}) 
                     end
-        )
+        )`)}
     ),
     gps_union as (
         select *, 'conecta' as fornecedor
