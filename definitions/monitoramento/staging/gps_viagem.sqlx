@@ -2,7 +2,7 @@ config {
   type: "incremental",
   schema: "monitoramento_staging",
   name: "gps_viagem",
-  tags: ["monitoramento_viagem_raw", "monitoramento_viagem"],
+  tags: ["monitoramento_viagem"],
   bigquery: {
     partitionBy: "data"
   }
@@ -25,7 +25,7 @@ with
             fonte_gps
         from ${ref("viagem_informada")}
         ${when(
-            incremental(), 
+            incremental(),
             `where data between date(${constants.date_range_start}) and date(${constants.date_range_end})`
         )}
     ),
@@ -37,17 +37,15 @@ with
             latitude, 
             longitude
         from ${ref("br_rj_riodejaneiro_veiculos", "gps_sppo")}
-        ${when(
-            incremental(), `where
+        where
         (
-        select
-            case 
-                when /* condição para incremental */ true then data 
-                    between date_sub(date(${constants.date_range_start}), interval 1 day) 
-                    and date_add(date(${constants.date_range_end}), interval 1 day) 
-                    else data >= date(${constants.data_inicial_gps_validacao_viagem}) 
-                    end
-        )`)}
+        ${when(
+            incremental(),
+            `data between date_sub(date(${constants.date_range_start}), interval 1 day) 
+                and date_add(date(${constants.date_range_end}), interval 1 day)`,
+            `data >= date(${constants.data_inicial_gps_validacao_viagem})`
+        )}
+        )
     ),
     gps_zirix as (
         select 
@@ -58,17 +56,15 @@ with
             latitude, 
             longitude
         from ${ref("br_rj_riodejaneiro_onibus_gps_zirix", "gps_sppo")}
-        ${when(
-            incremental(), `where
+        where
         (
-        select
-            case 
-                when /* condição para incremental */ true then data 
-                    between date_sub(date(${constants.date_range_start}), interval 1 day) 
-                    and date_add(date(${constants.date_range_end}), interval 1 day) 
-                    else data >= date(${constants.data_inicial_gps_validacao_viagem}) 
-                    end
-        )`)}
+        ${when(
+            incremental(),
+            `data between date_sub(date(${constants.date_range_start}), interval 1 day) 
+                and date_add(date(${constants.date_range_end}), interval 1 day)`,
+            `data >= date(${constants.data_inicial_gps_validacao_viagem})`
+        )}
+        )
     ),
     gps_union as (
         select *, 'conecta' as fornecedor

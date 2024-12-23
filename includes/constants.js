@@ -5,7 +5,7 @@ const comprimento_minimo_segmento_shape = 990;
 const parametro_validacao = 0.9;
 const data_inicial_gps_validacao_viagem = `"2024-12-18"`;
 const date_range_start = `"2024-12-18T00:00:00"`;
-const date_range_end = `"2024-12-18T00:59:59"`;
+const date_range_end = `"2024-12-18T23:59:59"`;
 
 function get_last_feed_start_date() {
   return `
