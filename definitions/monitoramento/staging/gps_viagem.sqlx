@@ -44,7 +44,7 @@ with
             incremental(),
             `data between date_sub(date(${constants.date_range_start}), interval 1 day) 
                 and date_add(date(${constants.date_range_end}), interval 1 day)`,
-            `data >= date(${constants.data_inicial_gps_validacao_viagem})`
+            `data >= date(${helpers.data_inicial_gps_validacao_viagem})`
         )}
         )
     ),
@@ -63,7 +63,7 @@ with
             incremental(),
             `data between date_sub(date(${constants.date_range_start}), interval 1 day) 
                 and date_add(date(${constants.date_range_end}), interval 1 day)`,
-            `data >= date(${constants.data_inicial_gps_validacao_viagem})`
+            `data >= date(${helpers.data_inicial_gps_validacao_viagem})`
         )}
         )
     ),
