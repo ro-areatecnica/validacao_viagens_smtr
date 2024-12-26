@@ -3,16 +3,13 @@ const buffer_tunel_metros = 50;
 const limite_reducao_area_buffer = 0.5;
 const comprimento_minimo_segmento_shape = 990;
 const parametro_validacao = 0.9;
-const data_inicial_gps_validacao_viagem = `"2024-11-24"`;
-const date_range_start = `"2024-11-24T00:00:00"`;
-const date_range_end = `"2024-11-24T23:59:59"`;
+const qtd_dia = 1;
+const data_inicial_gps_validacao_viagem = new Date('2024-11-26');
+data_inicial_gps_validacao_viagem.setDate(data_inicial_gps_validacao_viagem.getDate() - qtd_dia);
 
+const date_range_start = `'${data_inicial_gps_validacao_viagem.toISOString().split('T')[0]}T00:00:00'`;
 
-// const qtd_dia = 1;
-// const data_inicial_gps_validacao_viagem = new Date() - qtd_dia;
-// const date_range_start = data_inicial_gps_validacao_viagem + `"T00:00:00"`;
-// const date_range_end = date_range_start replace `"23:59:59"`;
-
+const date_range_end = date_range_start.replace("T00:00:00", "T23:59:59");
 
 
 function get_last_feed_start_date() {
