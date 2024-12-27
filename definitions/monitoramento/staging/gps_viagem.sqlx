@@ -5,13 +5,7 @@ config {
   tags: ["monitoramento_viagem"],
   bigquery: {
     partitionBy: "data"
-  },
-  uniqueKey: ["data"]
-}
-
-pre_operations {
-  DELETE FROM ${self()} 
-  WHERE DATE(data) BETWEEN DATE(${constants.date_range_start}) AND DATE(${constants.date_range_end});
+  }
 }
 
 with
