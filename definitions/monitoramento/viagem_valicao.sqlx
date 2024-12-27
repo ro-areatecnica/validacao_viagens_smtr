@@ -1,5 +1,6 @@
 config {
   type: "incremental",
+  uniqueKey: ["data", "id_viagem"],
   schema: "monitoramento",
   name: "viagem_validacao",
   tags: ["monitoramento_viagem"],
