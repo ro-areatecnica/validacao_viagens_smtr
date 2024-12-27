@@ -1,4 +1,4 @@
-const data_atual = new Date("2024-11-26");
+const data_atual = new Date("2024-11-27");
 
 data_atual.setDate(data_atual.getDate() - 1);
 
