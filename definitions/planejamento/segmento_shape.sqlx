@@ -8,12 +8,6 @@ config {
   }
 }
 
-/* O tipo operations não tem opção de particionamento,
-verificar como vai ser feito.
- bigquery: {
-    partitionBy: "feed_start_date"
-  }
- */
 pre_operations {
   DECLARE last_feed_version DATE;
 
