@@ -142,7 +142,7 @@ select
     v.feed_start_date,
     v.service_ids,
     v.tipo_dia,
-    '' as versao,
+    ${constants.versao} as versao,
     current_datetime("America/Sao_Paulo") as datetime_ultima_atualizacao
 from viagem_segmento v
 left join gps_segmento g using (id_viagem, shape_id, id_segmento)

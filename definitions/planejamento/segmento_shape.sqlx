@@ -94,7 +94,7 @@ select
         or indicador_area_prejudicada
         or indicador_segmento_pequeno
     ) as indicador_segmento_desconsiderado,
-    '' as versao
+    ${constants.versao} as versao
 from indicador_validacao_shape
 
 union all

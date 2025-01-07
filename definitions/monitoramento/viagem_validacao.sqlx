@@ -166,6 +166,6 @@ select
     tipo_dia,
     feed_version,
     feed_start_date,
-    '' as versao,
+    ${constants.versao} as versao,
     current_datetime("America/Sao_Paulo") as datetime_ultima_atualizacao
 from servicos_planejados

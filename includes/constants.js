@@ -1,10 +1,10 @@
-const versao = `""`;
+const versao = `"76a9e78183fb16ff2864670f49522feaa2bf2e4b"`;
 const buffer_tunel_metros = 50;
 const limite_reducao_area_buffer = 0.5;
 const comprimento_minimo_segmento_shape = 990;
 const parametro_validacao = 0.9;
 const qtd_dia = 1;
-const data_inicial_gps_validacao_viagem = new Date("2024-11-31");
+const data_inicial_gps_validacao_viagem = new Date("2024-12-02");
 data_inicial_gps_validacao_viagem.setDate(data_inicial_gps_validacao_viagem.getDate() - qtd_dia);
 
 const date_range_start = `'${data_inicial_gps_validacao_viagem.toISOString().split('T')[0]}T00:00:00'`;

@@ -1,0 +1,37 @@
+config {
+  type: "view",
+  schema: "monitoramento",
+  name: "vw_viagem_validacao",
+  tags: ["monitoramento_viagem"],
+  description: "View que informa se a viagem informada está ou não válida de acordo com os parâmetros definidos.",
+  columns: {
+    data: "Data da viagem (partição).",
+    id_viagem: "Código único identificador da viagem.",
+    datetime_partida: "Horário de início da viagem.",
+    datetime_chegada: "Horário de fim da viagem.",
+    modo: "Tipo de transporte (Ônibus, Van, BRT)",
+    id_veiculo: "Código identificador do veículo (número de ordem).",
+    trip_id: "Identificador de uma viagem da tabela trips do GTFS.",
+    route_id: "Identificador de uma rota da tabela routes do GTFS.",
+    shape_id: "Identificador de um shape da tabela shapes do GTFS.",
+    servico: "Serviço realizado pelo veículo.",
+    sentido: "Sentido da linha",
+    quantidade_segmentos_verificados: "Quantidade de segmentos considerados no validação.",
+    quantidade_segmentos_validos: "Quantidade de segmentos com pelo menos um sinal de gps.",
+    indice_validacao: "Quantidade_segmentos_validos dividido por quantidade_segmentos_verificados.",
+    indicador_trajeto_valido: "Indica se o veículo cumpriu o trajeto (indice_validacao >= parametro_validacao).",
+    indicador_servico_planejado: "Indica se o serviço estava planejado para o tipo dia.",
+    indicador_viagem_valida: "Indica se a viagem está válida ou não.",
+    parametro_validacao: "Valor mínimo do indice_validacao para que a viagem seja validada.",
+    tipo_dia: "Dia da semana - categorias: Dia Útil, Sábado, Domingo",
+    feed_version: "String que indica a versão atual do conjunto de dados GTFS.",
+    feed_start_date: "Data inicial do feed (versão).",
+    versao: "Código de controle de versão do dado (SHA Github)",
+    datetime_ultima_atualizacao: "Última atualização (GMT-3)."
+  }
+}
+
+SELECT
+*
+FROM ${ref("viagem_validacao")}
+WHERE modo NOT IN("BRT", "Ônibus Executivo")
