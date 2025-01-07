@@ -93,7 +93,7 @@ select
     v.route_id,
     v.shape_id,
     v.fonte_gps,
-    '' as versao,
+    ${constants.versao} as versao,
     current_datetime("America/Sao_Paulo") as datetime_ultima_atualizacao
 from gps_union g
 join
