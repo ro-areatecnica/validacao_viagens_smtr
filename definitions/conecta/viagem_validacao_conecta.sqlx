@@ -1,0 +1,171 @@
+config {
+  type: "incremental",
+  uniqueKey: ["data", "id_viagem"],
+  schema: "conecta",
+  name: "viagem_validacao_conecta",
+  tags: ["monitoramento_viagem"],
+  bigquery: {
+    partitionBy: "data"
+  },
+  description: "Tabela que informa se a viagem informada está ou não válida de acordo com os parâmetros definidos.",
+  columns: {
+    data: "Data da viagem (partição).",
+    id_viagem: "Código único identificador da viagem.",
+    datetime_partida: "Horário de início da viagem.",
+    datetime_chegada: "Horário de fim da viagem.",
+    modo: "Tipo de transporte (Ônibus, Van, BRT)",
+    id_veiculo: "Código identificador do veículo (número de ordem).",
+    trip_id: "Identificador de uma viagem da tabela trips do GTFS.",
+    route_id: "Identificador de uma rota da tabela routes do GTFS.",
+    shape_id: "Identificador de um shape da tabela shapes do GTFS.",
+    servico: "Serviço realizado pelo veículo.",
+    sentido: "Sentido da linha",
+    quantidade_segmentos_verificados: "Quantidade de segmentos considerados no validação.",
+    quantidade_segmentos_validos: "Quantidade de segmentos com pelo menos um sinal de gps.",
+    indice_validacao: "Quantidade_segmentos_validos dividido por quantidade_segmentos_verificados.",
+    indicador_trajeto_valido: "Indica se o veículo cumpriu o trajeto (indice_validacao >= parametro_validacao).",
+    indicador_servico_planejado: "Indica se o serviço estava planejado para o tipo dia.",
+    indicador_viagem_valida: "Indica se a viagem está válida ou não.",
+    parametro_validacao: "Valor mínimo do indice_validacao para que a viagem seja validada.",
+    tipo_dia: "Dia da semana - categorias: Dia Útil, Sábado, Domingo",
+    feed_version: "String que indica a versão atual do conjunto de dados GTFS.",
+    feed_start_date: "Data inicial do feed (versão).",
+    versao: "Código de controle de versão do dado (SHA Github)",
+    datetime_ultima_atualizacao: "Última atualização (GMT-3)."
+  }
+}
+
+pre_operations {
+  DECLARE gtfs_feeds ARRAY<DATE>;
+
+  SET gtfs_feeds = (
+    SELECT ARRAY_AGG(feed_start_date)
+    FROM (
+      SELECT DISTINCT feed_start_date
+      FROM ${ref("planejamento", "calendario")}
+      ${when(
+        incremental(),
+        `WHERE data BETWEEN DATE(${constants.date_range_start}) AND DATE(${constants.date_range_end})`
+      )}
+    )
+  );
+}
+
+with
+    contagem as (
+        select
+            data,
+            id_viagem,
+            datetime_partida,
+            datetime_chegada,
+            modo,
+            id_veiculo,
+            trip_id,
+            route_id,
+            shape_id,
+            servico,
+            sentido,
+            count(*) as quantidade_segmentos_verificados,
+            countif(quantidade_gps > 0) as quantidade_segmentos_validos,
+            service_ids,
+            tipo_dia,
+            feed_version,
+            feed_start_date
+        from ${ref("gps_segmento_viagem_conecta")}
+        where
+            not indicador_segmento_desconsiderado
+            ${when(
+                incremental(),
+                `AND data BETWEEN DATE(${constants.date_range_start}) AND DATE(${constants.date_range_end})`
+            )}
+        group by
+            data,
+            id_viagem,
+            datetime_partida,
+            datetime_chegada,
+            modo,
+            id_veiculo,
+            trip_id,
+            route_id,
+            shape_id,
+            servico,
+            sentido,
+            service_ids,
+            tipo_dia,
+            feed_version,
+            feed_start_date
+    ),
+    indice as (
+        select
+            data,
+            id_viagem,
+            datetime_partida,
+            datetime_chegada,
+            modo,
+            id_veiculo,
+            trip_id,
+            route_id,
+            shape_id,
+            servico,
+            sentido,
+            quantidade_segmentos_verificados,
+            quantidade_segmentos_validos,
+            quantidade_segmentos_validos
+            / quantidade_segmentos_verificados as indice_validacao,
+            service_ids,
+            tipo_dia,
+            feed_version,
+            feed_start_date
+        from contagem
+    ),
+    trips as (
+        select distinct
+            feed_start_date,
+            feed_version,
+            route_id,
+            array_agg(service_id) as service_ids,
+        from ${ref("trips")}
+        ${when(
+            incremental(),
+            `where feed_start_date in UNNEST(gtfs_feeds)`
+        )}
+        group by 1, 2, 3
+    ),
+    servicos_planejados as (
+        select
+            i.*,
+            (
+                select count(*)
+                from unnest(i.service_ids) as service_id
+                join unnest(t.service_ids) as service_id using (service_id)
+            )
+            > 0 as indicador_servico_planejado
+        from indice i
+        left join trips t using (feed_start_date, feed_version, route_id)
+    )
+select
+    data,
+    id_viagem,
+    datetime_partida,
+    datetime_chegada,
+    modo,
+    id_veiculo,
+    trip_id,
+    route_id,
+    shape_id,
+    servico,
+    sentido,
+    quantidade_segmentos_verificados,
+    quantidade_segmentos_validos,
+    indice_validacao,
+    indice_validacao >= ${constants.parametro_validacao} as indicador_trajeto_valido,
+    indicador_servico_planejado,
+    indice_validacao >= ${constants.parametro_validacao}
+    and indicador_servico_planejado as indicador_viagem_valida,
+    ${constants.parametro_validacao} as parametro_validacao,
+    tipo_dia,
+    feed_version,
+    feed_start_date,
+    ${constants.versao} as versao,
+    current_datetime("America/Sao_Paulo") as datetime_ultima_atualizacao
+from servicos_planejados
