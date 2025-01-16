@@ -1,43 +1,32 @@
 config {
   type: "incremental",
-  uniqueKey: ["data_viagem", "id_viagem", "timestamp_gps"],
   schema: "conecta",
   name: "gps_viagem_conecta",
   tags: ["monitoramento_viagem"],
   bigquery: {
-    partitionBy: "data_viagem"
+    partitionBy: "data"
   }
 }
 
 with
     viagem as (
           select
-            data_viagem,
+            data,
             id_viagem,
-            DATETIME(datetime_partida) as datetime_partida,
-            DATETIME(datetime_chegada) as datetime_chegada,
-            case when r.route_type = '700' then 'Ônibus SPPO' end as modo,
+            datetime_partida,
+            datetime_chegada,
+            modo,
             id_veiculo,
             trip_id,
-            c.route_id,
+            route_id,
             shape_id,
             servico,
-            case
-                when sentido = 'I'
-                then 'Ida'
-                when sentido = 'V'
-                then 'Volta'
-                when sentido = 'C'
-                then 'Circular'
-                else sentido
-            end as sentido,
-            fornecedor as fonte_gps
-        from ${ref("api_conecta")} c
-        left join ${ref("routes")} r
-        on c.route_id = r.route_id
+            sentido,
+            fonte_gps
+        from ${ref("viagem_informada_monitoramento_conecta")} c
         ${when(
             incremental(),
-            `where data_viagem between date(${constants.date_range_start}) and date(${constants.date_range_end})`
+            `where data between date(${constants.date_range_start}) and date(${constants.date_range_end})`
         )}
     ),
     gps_conecta as (
@@ -88,7 +77,7 @@ with
         from gps_zirix
     )
 select
-    v.data_viagem,
+    v.data,
     g.timestamp_gps,
     v.modo,
     g.id_veiculo,
@@ -113,4 +102,4 @@ join
     and g.id_veiculo = v.id_veiculo
     and g.servico = v.servico
     and g.fornecedor = v.fonte_gps
-where v.data_viagem <= date_sub(current_date("America/Sao_Paulo"), interval 2 day)
+where v.data <= date_sub(current_date("America/Sao_Paulo"), interval 2 day)
