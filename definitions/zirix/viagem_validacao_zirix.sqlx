@@ -1,15 +1,15 @@
 config {
   type: "incremental",
   uniqueKey: ["data", "id_viagem"],
-  schema: "conecta",
-  name: "viagem_validacao_conecta",
-  tags: ["monitoramento_viagem"],
+  schema: "zirix",
+  name: "viagem_validacao_zirix",
+  tags: [""],
   bigquery: {
-    partitionBy: "data_viagem"
+    partitionBy: "data"
   },
   description: "Tabela que informa se a viagem informada está ou não válida de acordo com os parâmetros definidos.",
   columns: {
-    data_viagem: "Data da viagem (partição).",
+    data: "Data da viagem (partição).",
     id_viagem: "Código único identificador da viagem.",
     datetime_partida: "Horário de início da viagem.",
     datetime_chegada: "Horário de fim da viagem.",
@@ -54,7 +54,7 @@ pre_operations {
 with
     contagem as (
         select
-            data_viagem,
+            data,
             id_viagem,
             datetime_partida,
             datetime_chegada,
@@ -71,15 +71,15 @@ with
             tipo_dia,
             feed_version,
             feed_start_date
-        from ${ref("gps_segmento_viagem_conecta")}
+        from ${ref("gps_segmento_viagem_zirix")}
         where
             not indicador_segmento_desconsiderado
             ${when(
                 incremental(),
-                `AND data_viagem BETWEEN DATE(${constants.date_range_start}) AND DATE(${constants.date_range_end})`
+                `AND data BETWEEN DATE(${constants.date_range_start}) AND DATE(${constants.date_range_end})`
             )}
         group by
-            data_viagem,
+            data,
             id_viagem,
             datetime_partida,
             datetime_chegada,
@@ -97,7 +97,7 @@ with
     ),
     indice as (
         select
-            data_viagem,
+            data,
             id_viagem,
             datetime_partida,
             datetime_chegada,
@@ -144,7 +144,7 @@ with
         left join trips t using (feed_start_date, feed_version, route_id)
     )
 select
-    data_viagem,
+    data,
     id_viagem,
     datetime_partida,
     datetime_chegada,

@@ -1,8 +1,8 @@
 config {
   type: "incremental",
-  schema: "conecta",
-  name: "gps_segmento_viagem_conecta",
-  tags: ["monitoramento_viagem"],
+  schema: "zirix",
+  name: "gps_segmento_viagem_zirix",
+  tags: [""],
   bigquery: {
     partitionBy: "data_viagem"
   }
@@ -37,13 +37,13 @@ with
     gps_viagem as (
         select
             data_viagem as data,
-            gv.id_viagem,
-            gv.shape_id,
-            gv.geo_point_gps,
+            gz.id_viagem,
+            gz.shape_id,
+            gz.geo_point_gps,
             c.feed_version,
             c.feed_start_date
-        from ${ref("gps_viagem_conecta")} gv
-        join ${ref("calendario")} c on gv.data_viagem = c.data
+        from ${ref("gps_viagem_zirix")} gz
+        join ${ref("calendario")} c on gz.data_viagem = c.data
         ${when(
             incremental(),
             `where data_viagem between date(${constants.date_range_start}) and date(${constants.date_range_end})`
@@ -80,24 +80,24 @@ with
     viagem as (
         select
             data_viagem,
-            ac.id_viagem,
-            ac.datetime_partida,
-            ac.datetime_chegada,
+            az.id_viagem,
+            az.datetime_partida,
+            az.datetime_chegada,
             case when r.route_type = '700' then 'Ônibus SPPO' end as modo,
-            ac.id_veiculo,
-            ac.trip_id,
-            ac.route_id,
-            ac.shape_id,
-            ac.servico,
-            ac.sentido,
+            az.id_veiculo,
+            az.trip_id,
+            az.route_id,
+            az.shape_id,
+            az.servico,
+            az.sentido,
             c.service_ids,
             c.tipo_dia,
             c.feed_start_date,
             c.feed_version
-        from ${ref("api_conecta")} ac
-        join ${ref("calendario")} c on ac.data_viagem = c.data
+        from ${ref("api_zirix")} az
+        join ${ref("calendario")} c on az.data_viagem = c.data
         left join ${ref("routes")} r
-        on ac.route_id = r.route_id
+        on az.route_id = r.route_id
         ${when(
             incremental(),
             `where data_viagem between date(${constants.date_range_start}) and date(${constants.date_range_end})`
