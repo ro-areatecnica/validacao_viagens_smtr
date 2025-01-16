@@ -58,7 +58,7 @@ with
             id_segmento,
             buffer,
             indicador_segmento_desconsiderado
-        from rj-smtr.planejamento.segmento_shape
+        from ${ref("planejamento", "segmento_shape")}
         ${when(
             incremental(),
             `WHERE feed_start_date IN UNNEST(gtfs_feeds)`
