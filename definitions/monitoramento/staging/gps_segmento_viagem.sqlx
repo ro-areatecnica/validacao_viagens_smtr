@@ -58,7 +58,7 @@ with
             id_segmento,
             buffer,
             indicador_segmento_desconsiderado
-        from ${ref("segmento_shape")}
+        from ${ref("planejamento", "segmento_shape")}
         ${when(
             incremental(),
             `WHERE feed_start_date IN UNNEST(gtfs_feeds)`
@@ -94,11 +94,11 @@ with
             c.tipo_dia,
             c.feed_start_date,
             c.feed_version
-        from ${ref("viagem_informada")} v
+        from ${ref("monitoramento", "viagem_informada")} v
         join calendario c using (data)
         ${when(
             incremental(),
-            `where data between date(${constants.date_range_start}) and date(${constants.date_range_end})`
+            `where data between date(${constants.date_range_start}) and date(${constants.date_range_end}) and modo = "Ônibus SPPO"`
             )} 
     ),
     viagem_segmento as (
@@ -149,5 +149,5 @@ left join gps_segmento g using (id_viagem, shape_id, id_segmento)
 ${when(
     incremental(),
     '',
-    `where v.data <= date_sub(current_date("America/Sao_Paulo"), interval 2 day)`
+    `where v.data <= date_sub(current_date("America/Sao_Paulo"), interval 2 day) and modo = "Ônibus SPPO"`
 )}

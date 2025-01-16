@@ -1,120 +1,120 @@
-config {
-  type: "incremental",
-  schema: "planejamento",
-  name: "segmento_shape",
-  tags: ["geolocalizacao"],
-  bigquery: {
-    partitionBy: "feed_start_date"
-  }
-}
+-- config {
+--   type: "incremental",
+--   schema: "planejamento",
+--   name: "segmento_shape",
+--   tags: ["geolocalizacao"],
+--   bigquery: {
+--     partitionBy: "feed_start_date"
+--   }
+-- }
 
-pre_operations {
-  DECLARE last_feed_version DATE;
+-- pre_operations {
+--   DECLARE last_feed_version DATE;
 
-  SET last_feed_version = (
-    SELECT MAX(feed_start_date)
-    FROM ${ref("gtfs", "feed_info")}
-    ${when(incremental(), `WHERE feed_start_date < ${constants.data_versao_gtfs}`)}
-  );
-}
+--   SET last_feed_version = (
+--     SELECT MAX(feed_start_date)
+--     FROM ${ref("gtfs", "feed_info")}
+--     ${when(incremental(), `WHERE feed_start_date < ${constants.data_versao_gtfs}`)}
+--   );
+-- }
 
-with
-    aux_segmento as (
-        select
-            feed_start_date,
-            feed_end_date,
-            feed_version,
-            shape_id,
-            id_segmento,
-            st_geogfromtext(wkt_segmento) as segmento,
-            wkt_segmento,
-            round(cast(comprimento_segmento as float64), 2) as comprimento_segmento,
-            st_geogfromtext(buffer_completo) as buffer_completo
-        FROM ${ref("aux_segmento_shape")}
+-- with
+--     aux_segmento as (
+--         select
+--             feed_start_date,
+--             feed_end_date,
+--             feed_version,
+--             shape_id,
+--             id_segmento,
+--             st_geogfromtext(wkt_segmento) as segmento,
+--             wkt_segmento,
+--             round(cast(comprimento_segmento as float64), 2) as comprimento_segmento,
+--             st_geogfromtext(buffer_completo) as buffer_completo
+--         FROM ${ref("aux_segmento_shape")}
         
-    ),
-    tunel as (
-        select
-            st_union_agg(
-                st_buffer(geometry, ${constants.buffer_tunel_metros})
-            ) as buffer_tunel
-        from ${ref("logradouro")}
-        where tipo = "Túnel"
+--     ),
+--     tunel as (
+--         select
+--             st_union_agg(
+--                 st_buffer(geometry, ${constants.buffer_tunel_metros})
+--             ) as buffer_tunel
+--         from ${ref("logradouro")}
+--         where tipo = "Túnel"
 
-    ),
-    intercessao_segmento as (
-        select
-            s1.shape_id,
-            s1.id_segmento,
-            st_union(array_agg(s2.buffer_completo)) as buffer_segmento_posterior
-        from aux_segmento s1
-        join
-            aux_segmento s2
-            on s1.shape_id = s2.shape_id
-            and s1.id_segmento < s2.id_segmento
-            and st_intersects(s1.buffer_completo, s2.buffer_completo)
-        group by 1, 2
-    ),
-    buffer_segmento_recortado as (
-        select
-            s.*,
-            coalesce(
-                st_difference(buffer_completo, i.buffer_segmento_posterior),
-                buffer_completo
-            ) as buffer
-        from aux_segmento s
-        left join intercessao_segmento i using (shape_id, id_segmento)
-    ),
-    indicador_validacao_shape as (
-        select
-            s.*,
-            st_intersects(s.segmento, t.buffer_tunel) as indicador_tunel,
-            st_area(s.buffer) / st_area(s.buffer_completo)
-            < ${constants.limite_reducao_area_buffer} as indicador_area_prejudicada,
-            s.comprimento_segmento
-            < ${constants.comprimento_minimo_segmento_shape}
-            as indicador_segmento_pequeno,
-            cast(id_segmento as integer) as id_segmento_int
-        from buffer_segmento_recortado s
-        cross join tunel t
-    )
-select
-    * except (id_segmento_int),
-    (
-        (
-            indicador_tunel
-            and (
-                (id_segmento_int > 1)
-                and (
-                    id_segmento_int
-                    < max(id_segmento_int) over (partition by feed_start_date, shape_id)
-                )
-            )
-        )
-        or indicador_area_prejudicada
-        or indicador_segmento_pequeno
-    ) as indicador_segmento_desconsiderado,
-    ${constants.versao} as versao
-from indicador_validacao_shape
+--     ),
+--     intercessao_segmento as (
+--         select
+--             s1.shape_id,
+--             s1.id_segmento,
+--             st_union(array_agg(s2.buffer_completo)) as buffer_segmento_posterior
+--         from aux_segmento s1
+--         join
+--             aux_segmento s2
+--             on s1.shape_id = s2.shape_id
+--             and s1.id_segmento < s2.id_segmento
+--             and st_intersects(s1.buffer_completo, s2.buffer_completo)
+--         group by 1, 2
+--     ),
+--     buffer_segmento_recortado as (
+--         select
+--             s.*,
+--             coalesce(
+--                 st_difference(buffer_completo, i.buffer_segmento_posterior),
+--                 buffer_completo
+--             ) as buffer
+--         from aux_segmento s
+--         left join intercessao_segmento i using (shape_id, id_segmento)
+--     ),
+--     indicador_validacao_shape as (
+--         select
+--             s.*,
+--             st_intersects(s.segmento, t.buffer_tunel) as indicador_tunel,
+--             st_area(s.buffer) / st_area(s.buffer_completo)
+--             < ${constants.limite_reducao_area_buffer} as indicador_area_prejudicada,
+--             s.comprimento_segmento
+--             < ${constants.comprimento_minimo_segmento_shape}
+--             as indicador_segmento_pequeno,
+--             cast(id_segmento as integer) as id_segmento_int
+--         from buffer_segmento_recortado s
+--         cross join tunel t
+--     )
+-- select
+--     * except (id_segmento_int),
+--     (
+--         (
+--             indicador_tunel
+--             and (
+--                 (id_segmento_int > 1)
+--                 and (
+--                     id_segmento_int
+--                     < max(id_segmento_int) over (partition by feed_start_date, shape_id)
+--                 )
+--             )
+--         )
+--         or indicador_area_prejudicada
+--         or indicador_segmento_pequeno
+--     ) as indicador_segmento_desconsiderado,
+--     ${constants.versao} as versao
+-- from indicador_validacao_shape
 
-union all
+-- union all
 
-select
-    s.feed_start_date,
-    fi.feed_end_date,
-    s.feed_version,
-    s.shape_id,
-    s.id_segmento,
-    s.segmento,
-    s.wkt_segmento,
-    s.comprimento_segmento,
-    s.buffer_completo,
-    s.buffer,
-    s.indicador_tunel,
-    s.indicador_area_prejudicada,
-    s.indicador_segmento_pequeno,
-    s.indicador_segmento_desconsiderado,
-    s.versao
-from planejamento.segmento_shape s
-join ${ref("feed_info")} fi using (feed_start_date)
-where feed_start_date = last_feed_version
+-- select
+--     s.feed_start_date,
+--     fi.feed_end_date,
+--     s.feed_version,
+--     s.shape_id,
+--     s.id_segmento,
+--     s.segmento,
+--     s.wkt_segmento,
+--     s.comprimento_segmento,
+--     s.buffer_completo,
+--     s.buffer,
+--     s.indicador_tunel,
+--     s.indicador_area_prejudicada,
+--     s.indicador_segmento_pequeno,
+--     s.indicador_segmento_desconsiderado,
+--     s.versao
+-- from planejamento.segmento_shape s
+-- join ${ref("feed_info")} fi using (feed_start_date)
+-- where feed_start_date = last_feed_version

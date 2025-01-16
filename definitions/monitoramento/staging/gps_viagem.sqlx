@@ -28,7 +28,7 @@ with
         ${when(
             incremental(),
             `where data between date(${constants.date_range_start}) and date(${constants.date_range_end})`
-        )}
+        )} 
     ),
     gps_conecta as (
         select 
@@ -103,3 +103,5 @@ join
     and g.servico = v.servico
     and g.fornecedor = v.fonte_gps
 where v.data <= date_sub(current_date("America/Sao_Paulo"), interval 2 day)
+and v.modo = "Ônibus SPPO"
+
