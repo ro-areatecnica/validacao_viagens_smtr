@@ -1,9 +1,8 @@
 config {
   type: "incremental",
-  uniqueKey: ["data", "id_viagem"],
   schema: "zirix",
   name: "viagem_validacao_zirix",
-  tags: [""],
+  tags: ["monitoramento_viagem"],
   bigquery: {
     partitionBy: "data"
   },

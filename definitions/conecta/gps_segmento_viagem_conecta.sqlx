@@ -4,7 +4,7 @@ config {
   name: "gps_segmento_viagem_conecta",
   tags: ["monitoramento_viagem"],
   bigquery: {
-    partitionBy: "data_viagem"
+    partitionBy: "data"
   }
 }
 
@@ -36,17 +36,17 @@ with
     ),
     gps_viagem as (
         select
-            data_viagem as data,
+            data,
             gv.id_viagem,
             gv.shape_id,
             gv.geo_point_gps,
             c.feed_version,
             c.feed_start_date
         from ${ref("gps_viagem_conecta")} gv
-        join ${ref("calendario")} c on gv.data_viagem = c.data
+        join calendario c using (data)
         ${when(
             incremental(),
-            `where data_viagem between date(${constants.date_range_start}) and date(${constants.date_range_end})`
+            `where data between date(${constants.date_range_start}) and date(${constants.date_range_end})`
         )} 
     ),
     segmento as (
@@ -58,7 +58,7 @@ with
             id_segmento,
             buffer,
             indicador_segmento_desconsiderado
-        from ${ref("segmento_shape")}
+        from rj-smtr.planejamento.segmento_shape
         ${when(
             incremental(),
             `WHERE feed_start_date IN UNNEST(gtfs_feeds)`
@@ -79,33 +79,31 @@ with
     ),
     viagem as (
         select
-            data_viagem,
-            ac.id_viagem,
-            ac.datetime_partida,
-            ac.datetime_chegada,
-            case when r.route_type = '700' then 'Ônibus SPPO' end as modo,
-            ac.id_veiculo,
-            ac.trip_id,
-            ac.route_id,
-            ac.shape_id,
-            ac.servico,
-            ac.sentido,
+            data,
+            v.id_viagem,
+            v.datetime_partida,
+            v.datetime_chegada,
+            modo,
+            v.id_veiculo,
+            v.trip_id,
+            v.route_id,
+            v.shape_id,
+            v.servico,
+            v.sentido,
             c.service_ids,
             c.tipo_dia,
             c.feed_start_date,
             c.feed_version
-        from ${ref("api_conecta")} ac
-        join ${ref("calendario")} c on ac.data_viagem = c.data
-        left join ${ref("routes")} r
-        on ac.route_id = r.route_id
+        from ${ref("viagem_informada_monitoramento_conecta")} v
+        join calendario c using (data)
         ${when(
             incremental(),
-            `where data_viagem between date(${constants.date_range_start}) and date(${constants.date_range_end})`
+            `where data between date(${constants.date_range_start}) and date(${constants.date_range_end})`
             )} 
     ),
     viagem_segmento as (
         select
-            v.data_viagem,
+            v.data,
             v.id_viagem,
             v.datetime_partida,
             v.datetime_chegada,
@@ -126,7 +124,7 @@ with
         join segmento s using (shape_id, feed_version, feed_start_date)
     )
 select
-    v.data_viagem,
+    v.data,
     id_viagem,
     v.datetime_partida,
     v.datetime_chegada,
@@ -151,5 +149,5 @@ left join gps_segmento g using (id_viagem, shape_id, id_segmento)
 ${when(
     incremental(),
     '',
-    `where v.data_viagem <= date_sub(current_date("America/Sao_Paulo"), interval 2 day)`
+    `where v.data <= date_sub(current_date("America/Sao_Paulo"), interval 2 day)`
 )}
