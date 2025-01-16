@@ -1,0 +1,7 @@
+config {
+  type: "declaration",
+  database: "rj-smtr",
+  schema: "planejamento",
+  name: "segmento_shape",
+  description: ""
+}

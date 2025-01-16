@@ -1,11 +1,11 @@
-config {
-  type: "table",
-  schema: "planejamento_staging",
-  name: "aux_segmento_shape",
-  dependencies: [ "aux_shapes_geom_filtrada" ],
-  tags: ["geolocalizacao"],
-}
+-- config {
+--   type: "table",
+--   schema: "planejamento_staging",
+--   name: "aux_segmento_shape",
+--   dependencies: [ "aux_shapes_geom_filtrada" ],
+--   tags: ["geolocalizacao"],
+-- }
 
-SELECT
-*
-FROM ${ref("aux_segmento_shape_raw")}
+-- SELECT
+-- *
+-- FROM ${ref("aux_segmento_shape_raw")}
