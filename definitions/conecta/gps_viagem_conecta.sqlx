@@ -2,7 +2,7 @@ config {
   type: "incremental",
   schema: "conecta",
   name: "gps_viagem_conecta",
-  tags: ["monitoramento_viagem"],
+  tags: ["monitoramento_viagem_apis"],
   bigquery: {
     partitionBy: "data"
   }
