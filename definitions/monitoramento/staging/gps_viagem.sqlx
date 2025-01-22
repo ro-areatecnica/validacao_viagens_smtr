@@ -4,7 +4,8 @@ config {
   name: "gps_viagem",
   tags: ["monitoramento_viagem"],
   bigquery: {
-    partitionBy: "data"
+    partitionBy: "data",
+    clusterBy: ["id_viagem"]
   }
 }
 
