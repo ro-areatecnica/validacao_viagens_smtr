@@ -1,11 +1,11 @@
 config {
   type: "incremental",
+  uniqueKey: ["id_viagem"],
   schema: "monitoramento",
   name: "viagem_validacao",
   tags: ["monitoramento_viagem"],
   bigquery: {
-    partitionBy: "data",
-    clusterBy: ["id_viagem"]
+    partitionBy: "data"
   },
   description: "Tabela que informa se a viagem informada está ou não válida de acordo com os parâmetros definidos.",
   columns: {

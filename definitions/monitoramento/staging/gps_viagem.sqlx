@@ -1,11 +1,11 @@
 config {
   type: "incremental",
+  uniqueKey: ["id_viagem"],
   schema: "monitoramento_staging",
   name: "gps_viagem",
   tags: ["monitoramento_viagem"],
   bigquery: {
-    partitionBy: "data",
-    clusterBy: ["id_viagem"]
+    partitionBy: "data"
   }
 }
 
