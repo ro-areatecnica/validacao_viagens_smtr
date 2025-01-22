@@ -1,5 +1,6 @@
 config {
   type: "incremental",
+  uniqueKey: ["data", "id_viagem"],
   schema: "monitoramento_staging",
   name: "gps_segmento_viagem",
   tags: ["monitoramento_viagem"],
@@ -98,7 +99,7 @@ with
         join calendario c using (data)
         ${when(
             incremental(),
-            `where data between date(${constants.date_range_start}) and date(${constants.date_range_end}) and modo = "Ônibus SPPO"`
+            `where data between date(${constants.date_range_start}) and date(${constants.date_range_end})`
             )} 
     ),
     viagem_segmento as (
@@ -137,7 +138,7 @@ select
     v.indicador_segmento_desconsiderado,
     v.servico,
     v.sentido,
-    ifnull(g.quantidade_gps, 0) as quantidade_gps,
+    IFNULL(g.quantidade_gps, 0) as quantidade_gps,
     v.feed_version,
     v.feed_start_date,
     v.service_ids,
@@ -149,5 +150,5 @@ left join gps_segmento g using (id_viagem, shape_id, id_segmento)
 ${when(
     incremental(),
     '',
-    `where v.data <= date_sub(current_date("America/Sao_Paulo"), interval 2 day) and modo = "Ônibus SPPO"`
+    `where v.data <= date_sub(current_date("America/Sao_Paulo"), interval 2 day)`
 )}

@@ -34,7 +34,8 @@ with
         select 
             data, 
             timestamp_gps, 
-            servico, id_veiculo, 
+            servico, 
+            id_veiculo, 
             latitude, 
             longitude
         from ${ref("br_rj_riodejaneiro_veiculos", "gps_sppo")}
@@ -102,6 +103,8 @@ join
     and g.id_veiculo = v.id_veiculo
     and g.servico = v.servico
     and g.fornecedor = v.fonte_gps
-where v.data <= date_sub(current_date("America/Sao_Paulo"), interval 2 day)
-and v.modo = "Ônibus SPPO"
-
+${when(
+    incremental(),
+    '',
+    `where v.data <= date_sub(current_date("America/Sao_Paulo"), interval 2 day)`
+)}
