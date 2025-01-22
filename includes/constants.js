@@ -4,7 +4,7 @@ const limite_reducao_area_buffer = 0.5;
 const comprimento_minimo_segmento_shape = 990;
 const parametro_validacao = 0.9;
 const qtd_dia = 1;
-const data_inicial_gps_validacao_viagem = new Date("2024-11-15");
+const data_inicial_gps_validacao_viagem = new Date("2024-11-14");
 data_inicial_gps_validacao_viagem.setDate(data_inicial_gps_validacao_viagem.getDate() - qtd_dia);
 
 const date_range_start = `'${data_inicial_gps_validacao_viagem.toISOString().split('T')[0]}T00:00:00'`;
