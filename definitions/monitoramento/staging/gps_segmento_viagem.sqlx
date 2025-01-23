@@ -1,6 +1,5 @@
 config {
   type: "incremental",
-  uniqueKey: ["id_viagem"],
   schema: "monitoramento_staging",
   name: "gps_segmento_viagem",
   tags: ["monitoramento_viagem"],
