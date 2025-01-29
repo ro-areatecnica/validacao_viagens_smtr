@@ -1,7 +1,0 @@
-config {
-  type: "declaration",
-  database: "ro-areatecnica",
-  schema: "temp",
-  name: "api_zirix",
-  description: ""
-}

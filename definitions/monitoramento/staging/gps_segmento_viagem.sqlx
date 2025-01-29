@@ -28,7 +28,7 @@ pre_operations {
 with
     calendario as (
         select *
-        from ${ref("calendario")}        
+        from ${ref("calendario")}
         ${when(
             incremental(),
             `where data between date(${constants.date_range_start}) and date(${constants.date_range_end})`
@@ -162,5 +162,5 @@ select
 from viagem_segmento v
 left join gps_segmento g using (id_viagem, shape_id, id_segmento)
 left join servico_divergente s using (id_viagem)
-${when(incremental(), `WHERE data > (SELECT MAX(data) FROM ${self()})`, `WHERE v.data <= date_sub(current_date("America/Sao_Paulo"), interval 2 day)`) }
+${when(incremental(), `WHERE v.data > (SELECT MAX(data) FROM ${self()})`, `WHERE v.data <= date_sub(current_date("America/Sao_Paulo"), interval 2 day)`) }
 
