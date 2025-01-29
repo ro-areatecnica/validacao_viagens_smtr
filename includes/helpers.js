@@ -1,6 +1,6 @@
-const data_atual = new Date("2025-01-28");
+const data_atual = new Date();
 
-data_atual.setDate(data_atual.getDate() - 1);
+data_atual.setDate(data_atual.getDate() - 2);
 
 const data_inicial = data_atual.toISOString().split('T')[0];
 
