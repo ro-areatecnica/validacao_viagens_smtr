@@ -4,9 +4,13 @@ config {
   name: "gps_segmento_viagem",
   tags: ["monitoramento_viagem"],
   bigquery: {
-    partitionBy: "data"
+    partitionBy: {
+        field: "data",
+        granularity: "day"
+   },
   }
 }
+
 
 pre_operations {
   DECLARE gtfs_feeds ARRAY<DATE>;
@@ -108,7 +112,7 @@ with
             c.tipo_dia,
             c.feed_start_date,
             c.feed_version
-        from ${ref("monitoramento", "viagem_informada")} v
+        from ${ref("viagem_informada")} v
         join calendario c using (data)
         ${when(
             incremental(),
@@ -162,5 +166,7 @@ select
 from viagem_segmento v
 left join gps_segmento g using (id_viagem, shape_id, id_segmento)
 left join servico_divergente s using (id_viagem)
-${when(incremental(), `WHERE v.data > (SELECT MAX(data) FROM ${self()})`, `WHERE v.data <= date_sub(current_date("America/Sao_Paulo"), interval 2 day)`) }
+${when(incremental(),
+``, 
+`WHERE v.data <= date_sub(current_date("America/Sao_Paulo"), interval 2 day)`) }
 

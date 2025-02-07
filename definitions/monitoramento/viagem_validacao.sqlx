@@ -5,7 +5,10 @@ config {
   name: "viagem_validacao",
   tags: ["monitoramento_viagem"],
   bigquery: {
-    partitionBy: "data"
+    partitionBy: {
+        field: "data",
+        granularity: "day"
+   },
   },
   description: "Tabela que informa se a viagem informada está ou não válida de acordo com os parâmetros definidos.",
   columns: {
