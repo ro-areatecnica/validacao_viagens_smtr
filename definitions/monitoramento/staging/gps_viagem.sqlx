@@ -29,7 +29,8 @@ with
         from ${ref("viagem_informada")}
         ${when(
             incremental(),
-            `where data between date(${constants.date_range_start}) and date(${constants.date_range_end})`
+            `where data between date(${constants.date_range_start}) and date(${constants.date_range_end})`,
+            `where data = ${helpers.data_inicial_gps_validacao_viagem}` 
         )}
     ),
     gps_conecta as (
