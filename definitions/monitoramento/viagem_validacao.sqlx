@@ -51,7 +51,8 @@ pre_operations {
       FROM ${ref("planejamento", "calendario")}
       ${when(
         incremental(),
-        `WHERE data BETWEEN DATE(${constants.date_range_start}) AND DATE(${constants.date_range_end})`
+        `WHERE data BETWEEN DATE(${constants.date_range_start}) AND DATE(${constants.date_range_end})`,
+        `WHERE data = date(${helpers.data_inicial_gps_validacao_viagem})`
       )}
     )
   );
@@ -88,7 +89,8 @@ with
             )
             ${when(
                 incremental(),
-                `AND data BETWEEN DATE(${constants.date_range_start}) AND DATE(${constants.date_range_end})`
+                `AND data BETWEEN DATE(${constants.date_range_start}) AND DATE(${constants.date_range_end})`,
+                `AND data = ${helpers.data_inicial_gps_validacao_viagem}`
             )}
         group by
             data,
@@ -163,7 +165,8 @@ with
         from ${ref("viagem_planejada")}
         ${when(
             incremental(),
-            `WHERE data BETWEEN DATE(${constants.date_range_start}) AND DATE(${constants.date_range_end})`
+            `where data BETWEEN DATE(${constants.date_range_start}) AND DATE(${constants.date_range_end})`,
+            `where data = ${helpers.data_inicial_gps_validacao_viagem}`
         )}
         qualify
             row_number() over (
