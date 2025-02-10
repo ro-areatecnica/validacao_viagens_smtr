@@ -116,8 +116,9 @@ with
         join calendario c using (data)
         ${when(
             incremental(),
-            `where data between date(${constants.date_range_start}) and date(${constants.date_range_end})`
-            )} 
+            `where data between date(${constants.date_range_start}) and date(${constants.date_range_end})`,
+            `where data = ${helpers.data_inicial_gps_validacao_viagem}` 
+        )}
     ),
     viagem_segmento as (
         select
@@ -169,4 +170,6 @@ left join servico_divergente s using (id_viagem)
 ${when(incremental(),
 ``, 
 `WHERE v.data <= date_sub(current_date("America/Sao_Paulo"), interval 2 day)`) }
+
+
 
