@@ -3,7 +3,7 @@
 --   tags: ["setup"],
 -- }
 
--- CREATE TABLE `ro-areatecnica.planejamento.segmento_shape`
+-- CREATE TABLE `ro-areatecnica.planejamento_ajustado.segmento_shape`
 -- PARTITION BY feed_start_date
 -- AS
 -- SELECT

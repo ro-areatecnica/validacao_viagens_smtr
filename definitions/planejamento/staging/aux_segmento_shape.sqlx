@@ -1,6 +1,6 @@
 -- config {
 --   type: "table",
---   schema: "planejamento_staging",
+--   schema: "planejamento_staging_ajustado",
 --   name: "aux_segmento_shape",
 --   dependencies: [ "aux_shapes_geom_filtrada" ],
 --   tags: ["geolocalizacao"],
