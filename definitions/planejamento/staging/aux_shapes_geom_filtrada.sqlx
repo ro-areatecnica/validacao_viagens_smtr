@@ -1,6 +1,6 @@
 -- config {
 --   type: "view",
---   schema: "planejamento_staging_ajustado",
+--   schema: "planejamento_staging",
 --   name: "aux_shapes_geom_filtrada",
 --   tags: ["validacao_smtr"],
 -- }

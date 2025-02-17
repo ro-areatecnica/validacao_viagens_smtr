@@ -1,6 +1,6 @@
 config {
   type: "incremental",
-  schema: "monitoramento_staging_ajustado",
+  schema: "monitoramento_staging",
   name: "gps_segmento_viagem",
   tags: ["monitoramento_viagem"],
   bigquery: {

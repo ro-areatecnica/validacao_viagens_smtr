@@ -1,6 +1,6 @@
 -- config {
 --   type: "incremental",
---   schema: "planejamento_ajustado",
+--   schema: "planejamento",
 --   name: "shapes_geom",
 --   tags: ["validacao_smtr"],
 --   bigquery: {

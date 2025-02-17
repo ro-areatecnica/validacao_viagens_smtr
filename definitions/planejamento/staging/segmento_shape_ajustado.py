@@ -11,7 +11,7 @@
 # COMPRIMENTO_SHAPE = 500
 # PROJECAO_SIRGAS_2000 = "EPSG:31983"
 # PROJECAO_WGS_84 = "EPSG:4326"
-# TABELA_REFERENCIA = "ro-areatecnica.planejamento_staging_ajustado.aux_shapes_geom_filtrada"
+# TABELA_REFERENCIA = "ro-areatecnica.planejamento_staging.aux_shapes_geom_filtrada"
 #
 # # Principal função do process
 # def process(session):
